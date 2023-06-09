@@ -10,20 +10,19 @@ export default class DayRepository {
     private readonly default_filter: string = "&filter=(name >= '{1}')&&(name <= '{2}')";
 
     public async get_all_days(start: Date, end: Date): Promise<APIResponseDTO> {
-        start = new Date(start);
-        end = new Date(end);
-
-        let url = this.day_api_url;
-        url += this.default_page_size;
-        url += this.default_fields;
-        url += this.default_sort;
-        url += this.default_filter.replace("{1}", start.toISOString()).replace("{2}", end.toISOString());
-
+        const url = this.construct_default_url(start, end);
         const res = await fetch(url);
         return await res.json();
     }
 
     public async get_all_days_full(start: Date, end: Date): Promise<APIResponseDTO> {
+        let url = this.construct_default_url(start, end);
+        url += this.default_expand;
+        const res = await fetch(url);
+        return await res.json();
+    }
+
+    private construct_default_url(start: Date, end: Date): string {
         start = new Date(start);
         end = new Date(end);
 
@@ -34,8 +33,7 @@ export default class DayRepository {
         url += this.default_filter.replace("{1}", start.toISOString()).replace("{2}", end.toISOString());
         url += this.default_expand;
 
-        const res = await fetch(url);
-        return await res.json();
+        return url;
     }
 
     public async create(dto: RequestDayDTO): Promise<DayDTO> {

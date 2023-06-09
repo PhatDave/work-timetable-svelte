@@ -5,6 +5,7 @@ import type {Overtime} from "$lib/mvc/Entity/Overtime";
 import type {OvertimeDTO} from "$lib/mvc/DTO/OvertimeDTO";
 import type {Worktime} from "$lib/mvc/Entity/Worktime";
 import type {WorktimeDTO} from "$lib/mvc/DTO/WorktimeDTO";
+import {datetime_to_date} from "$lib/utils/DateUtils";
 
 export default class DayMapper {
     to_entity(data: APIResponseDTO): Day[] {
@@ -18,9 +19,11 @@ export default class DayMapper {
     }
 
     to_entity_1(data: DayDTO): Day {
+        const date: Date = new Date(data.name);
         return {
             id: data.id,
-            date: new Date(data.name),
+            datetime: date,
+            date: datetime_to_date(date),
             overtime: this.to_entity_4(data),
             work_time: this.to_entity_5(data)
         }

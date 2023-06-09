@@ -3,7 +3,8 @@ import type {Overtime} from "$lib/mvc/Entity/Overtime";
 
 export type Day = {
     id: string;
-    date: Date;
+    datetime: Date;
+    date: string;
     work_time: Worktime[];
     overtime: Overtime[];
 }
