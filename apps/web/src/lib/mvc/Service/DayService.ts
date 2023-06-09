@@ -1,9 +1,9 @@
-import Mapper from '$lib/mvc/Mapper/mapper';
 import DayRepository from '$lib/mvc/Repository/DayRepository';
 import type { Day } from '$lib/mvc/Entity/Day';
 import { build_month } from '$lib/utils/DateUtils';
 import type { DayDTO, RequestDayDTO } from '$lib/mvc/DTO/DayDTO';
 import type { APIResponseDTO } from '$lib/mvc/DTO/APIResponseDTO';
+import Mapper from '$lib/mvc/Mapper/Mapper';
 
 export default class DayService {
 	public static readonly cached_now: Date = new Date();
@@ -85,7 +85,7 @@ export default class DayService {
 		if (dto.totalItems === 0) {
 			return this.create({ name: date.toISOString() });
 		}
-		return this.mapper.to_entity_1(dto.items[0]);
+		return this.mapper.to_entity_1(dto.items[0] as DayDTO);
 	}
 
 	public async create(day: RequestDayDTO): Promise<Day> {

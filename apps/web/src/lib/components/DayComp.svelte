@@ -48,7 +48,7 @@
             {#if date.length === 1}0{/if}{date}.
             {#if month.length === 1}0{/if}{month}.
         </div>
-        <div class="text-center font-extrabold shadow-2xl text-4xl p-0 py-2">
+        <div class="text-center font-extrabold shadow-2xl text-2xl p-0 py-2">
             <span class:text-sky-500={work_hours >= 8}>{work_hours}</span>
             {#if overtime_hours > 0}
                 <span class="text-red-500">+ {overtime_hours}</span>

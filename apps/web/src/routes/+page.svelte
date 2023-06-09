@@ -5,15 +5,26 @@
 	import DayComp from "$components/DayComp.svelte";
 	import NavigationComp from "$components/NavigationComp.svelte";
 	import TotalsComp from "$components/TotalsComp.svelte";
+	import UserService from "$lib/mvc/Service/UserService";
 
 	const day_service = new DayService();
+	const user_service = new UserService();
 
-	let user = localStorage.getItem("user");
-	let logged_in = user !== null;
+	localStorage.clear();
+
+	let username = "";
+	const stored_user: string | null = localStorage.getItem('user');
+	if (stored_user) {
+		user_service.update_logged_user(username);
+		username = stored_user;
+	}
+
+	// TODO: Ask for help tomorrow
+	// UserService.is_logged_in() is not triggering update
+	// When UserService.logged_user changes
 
 	function apply_user() {
-		console.log(user);
-		// Handle this in DB later
+		user_service.update_logged_user(username);
 	}
 
 	let days: Day[] = [];
@@ -27,15 +38,18 @@
 	function work_date_update(event: CustomEvent<Date>) {
 		work_date = event.detail;
 	}
+
+	console.log(UserService.is_logged_in());
 </script>
 
 <template>
     <div class="form-control flex content-center items-center justify-center">
         <BackdropContainer>
-            {#if !logged_in}
+            {#if !UserService.is_logged_in()}
                 <div class="content-center text-center flex flex-col bg-transparent">
                     <p class="text-4xl shadow p-10">Username</p>
-                    <div class="text-5xl h-auto" contenteditable="true" bind:innerHTML={user}
+                    <div class="text-5xl h-auto border-cyan-500 border-2" contenteditable="true"
+                         bind:innerHTML={username}
                          on:focusout={apply_user}></div>
                 </div>
             {:else}

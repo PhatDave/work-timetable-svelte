@@ -1,7 +1,5 @@
-import type { DayDTO } from '$lib/mvc/DTO/DayDTO';
-
 export type APIResponseDTO = {
-	items: DayDTO[];
+	items: object[];
 	page: number;
 	perPage: number;
 	totalItems: number;

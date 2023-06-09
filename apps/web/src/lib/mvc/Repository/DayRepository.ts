@@ -25,7 +25,6 @@ export default class DayRepository {
 	): Promise<APIResponseDTO> {
 		let url = this.construct_default_url(start, end);
 		url += this.default_expand;
-		console.log(url);
 		const res = await fetch(url);
 		return await res.json();
 	}

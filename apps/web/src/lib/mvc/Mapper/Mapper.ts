@@ -6,13 +6,15 @@ import type { OvertimeDTO } from '$lib/mvc/DTO/OvertimeDTO';
 import type { Worktime } from '$lib/mvc/Entity/Worktime';
 import type { WorktimeDTO } from '$lib/mvc/DTO/WorktimeDTO';
 import { datetime_to_date } from '$lib/utils/DateUtils';
+import type { UserDTO } from '$lib/mvc/DTO/UserDTO';
+import type { User } from '$lib/mvc/Entity/User';
 
 export default class Mapper {
 	to_entity(data: APIResponseDTO): Day[] {
 		const out: Day[] = [];
 
 		for (const element of data.items) {
-			out.push(this.to_entity_1(element));
+			out.push(this.to_entity_1(element as DayDTO));
 		}
 
 		return out;
@@ -64,6 +66,13 @@ export default class Mapper {
 		return {
 			hours: data.hours,
 			id: data.id
+		};
+	}
+
+	to_entity_7(data: UserDTO): User {
+		return {
+			id: data.id,
+			name: data.name
 		};
 	}
 }

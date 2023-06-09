@@ -1,6 +1,7 @@
 import type { Day } from '$lib/mvc/Entity/Day';
 import DayService from '$lib/mvc/Service/DayService';
 import type { WorktimeDTO } from '$lib/mvc/DTO/WorktimeDTO';
+import UserService from '$lib/mvc/Service/UserService';
 
 export default class WorktimeRepository {
 	private readonly worktime_api_url: string =
@@ -14,7 +15,11 @@ export default class WorktimeRepository {
 
 		const res = await fetch(this.worktime_api_url, {
 			method: 'POST',
-			body: JSON.stringify({ hours, day: day.id }),
+			body: JSON.stringify({
+				hours,
+				day: day.id,
+				user: UserService.logged_user?.id
+			}),
 			headers: {
 				'Content-Type': 'application/json'
 			}

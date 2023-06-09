@@ -1,8 +1,8 @@
-import Mapper from '$lib/mvc/Mapper/mapper';
 import type { Day } from '$lib/mvc/Entity/Day';
 import type { WorktimeDTO } from '$lib/mvc/DTO/WorktimeDTO';
 import type { Worktime } from '$lib/mvc/Entity/Worktime';
 import WorktimeRepository from '$lib/mvc/Repository/WorktimeRepository';
+import Mapper from '$lib/mvc/Mapper/Mapper';
 
 export default class WorktimeService {
 	private readonly mapper: Mapper = new Mapper();
