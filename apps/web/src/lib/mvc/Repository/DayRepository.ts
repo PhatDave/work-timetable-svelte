@@ -8,8 +8,8 @@ export default class DayRepository {
 	private readonly default_page_size: string = '?perPage=100';
 	private readonly default_expand: string =
 		'&expand=work_time(day),overtime(day)';
-	private readonly default_fields: string = '&fields=id,name';
-	private readonly default_sort: string = '&sort=name';
+	private readonly default_fields: string = '&fields=id,name,expand';
+	private readonly default_sort: string = '&sort=-name';
 	private readonly default_filter: string =
 		"&filter=(name >= '{1}')&&(name <= '{2}')";
 
@@ -25,6 +25,7 @@ export default class DayRepository {
 	): Promise<APIResponseDTO> {
 		let url = this.construct_default_url(start, end);
 		url += this.default_expand;
+		console.log(url);
 		const res = await fetch(url);
 		return await res.json();
 	}
