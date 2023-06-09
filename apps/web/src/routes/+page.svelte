@@ -3,6 +3,7 @@
 	import DayService from "$lib/mvc/Service/DayService";
 	import type {Day} from "$lib/mvc/Entity/Day";
 	import DayComp from "$components/DayComp.svelte";
+	import NavigationComp from "$components/NavigationComp.svelte";
 
 	const day_service = new DayService();
 
@@ -22,16 +23,8 @@
 		promise.then((data: Day[]) => days = data);
 	}
 
-	function month_forward() {
-		work_date.setMonth(work_date.getMonth() + 1);
-		promise = day_service.get_days_of_month_full(work_date);
-		promise.then((data: Day[]) => days = data);
-	}
-
-	function month_backward() {
-		work_date.setMonth(work_date.getMonth() - 1);
-		promise = day_service.get_days_of_month_full(work_date);
-		promise.then((data: Day[]) => days = data);
+	function work_date_update(event: CustomEvent<Date>) {
+		work_date = event.detail;
 	}
 </script>
 
@@ -50,15 +43,18 @@
                         Loading...
                     </p>
                 {:then _}
-                    <button class="btn" on:click={month_backward}>Backward</button>
-                    <button class="btn" on:click={month_forward}>Forward</button>
+                    <div class="flex flex-col items-center">
+                        <div class="w-100">
+                            <NavigationComp {work_date} on:update={work_date_update}/>
+                        </div>
+                        <div class="grid grid-cols-7 gap-1">
+                            {#each days as day}
+                                <DayComp {day} {work_date}/>
+                            {/each}
+                        </div>
+                    </div>
                     <!--                    <NavigationTrayComponent :current-time="currentTime"/>-->
                     <!--                    <HeaderComponent :title="header" v-for="header in headers"/>-->
-                    <div class="grid grid-cols-7 gap-1">
-                        {#each days as day}
-                            <DayComp {day}/>
-                        {/each}
-                    </div>
                 {/await}
             {/if}
         </BackdropContainer>

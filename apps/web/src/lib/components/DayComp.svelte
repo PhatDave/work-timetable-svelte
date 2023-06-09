@@ -3,6 +3,7 @@
 	import DayService from "$lib/mvc/Service/DayService";
 
 	export let day: Day;
+	export let work_date: Date = DayService.cached_now;
 
 	const day_service = new DayService();
 
@@ -16,8 +17,11 @@
 		work_hours += day.work_time[i].hours;
 	}
 
-	const is_current_month = day_service.is_current_month(day);
-	const is_current_day = day_service.is_current_day(day);
+	// const is_current_month = day_service.is_current_month(day);
+	// const is_current_day = day_service.is_current_day(day);
+
+	const is_current_month = DayService.is_same_month(work_date, day.datetime);
+	const is_current_day = DayService.is_same_day(work_date, day.datetime);
 
 	const date = String(day.datetime.getDate());
 	const month = String(day.datetime.getMonth() + 1);

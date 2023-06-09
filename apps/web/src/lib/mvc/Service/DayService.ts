@@ -6,13 +6,27 @@ import type { DayDTO, RequestDayDTO } from '$lib/mvc/DTO/DayDTO';
 import type { APIResponseDTO } from '$lib/mvc/DTO/APIResponseDTO';
 
 export default class DayService {
+	public static readonly cached_now: Date = new Date();
 	private readonly mapper: DayMapper = new DayMapper();
 	private readonly repository: DayRepository = new DayRepository();
 
-	private readonly cache_now: Date = new Date();
+	public static is_same_month(datetime1: Date, datetime2: Date) {
+		return (
+			datetime1.getMonth() === datetime2.getMonth() &&
+			datetime1.getFullYear() === datetime2.getFullYear()
+		);
+	}
+
+	public static is_same_day(datetime1: Date, datetime2: Date) {
+		return (
+			datetime1.getDate() === datetime2.getDate() &&
+			datetime1.getMonth() === datetime2.getMonth() &&
+			datetime1.getFullYear() === datetime2.getFullYear()
+		);
+	}
 
 	public async get_this_month_days_full(): Promise<Day[]> {
-		return this.get_days_of_month_full(this.cache_now);
+		return this.get_days_of_month_full(DayService.cached_now);
 	}
 
 	public async get_days_of_month_full(datetime: Date): Promise<Day[]> {
@@ -74,16 +88,16 @@ export default class DayService {
 
 	public is_current_month(day: Day) {
 		return (
-			day.datetime.getMonth() === this.cache_now.getMonth() &&
-			day.datetime.getFullYear() === this.cache_now.getFullYear()
+			day.datetime.getMonth() === DayService.cached_now.getMonth() &&
+			day.datetime.getFullYear() === DayService.cached_now.getFullYear()
 		);
 	}
 
 	public is_current_day(day: Day) {
 		return (
-			day.datetime.getDate() === this.cache_now.getDate() &&
-			day.datetime.getMonth() === this.cache_now.getMonth() &&
-			day.datetime.getFullYear() === this.cache_now.getFullYear()
+			day.datetime.getDate() === DayService.cached_now.getDate() &&
+			day.datetime.getMonth() === DayService.cached_now.getMonth() &&
+			day.datetime.getFullYear() === DayService.cached_now.getFullYear()
 		);
 	}
 }
