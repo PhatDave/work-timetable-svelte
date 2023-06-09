@@ -1,18 +1,22 @@
 <script lang="ts">
-    import BackdropContainer from '$lib/components/containers/BackdropContainer.svelte';
-    import DayService from "$lib/mvc/Service/DayService";
+	import BackdropContainer from '$lib/components/containers/BackdropContainer.svelte';
+	import DayService from "$lib/mvc/Service/DayService";
+	import type {Day} from "$lib/mvc/Entity/Day";
+	import DayComp from "$components/DayComp.svelte";
 
-    let user = localStorage.getItem("user");
-    let logged_in = user !== null;
+	const day_service = new DayService();
 
-    function apply_user() {
-        console.log(user);
-        // Handle this in DB later
-    }
+	let user = localStorage.getItem("user");
+	let logged_in = user !== null;
 
-    const day_service = new DayService();
-    let promise = day_service.get_this_month_days_full();
-    promise.then(days => console.log(days));
+	function apply_user() {
+		console.log(user);
+		// Handle this in DB later
+	}
+
+	let days: Day[] = [];
+	let promise = day_service.get_this_month_days_full();
+	promise.then((data: Day[]) => days = data);
 </script>
 
 <template>
@@ -30,16 +34,12 @@
                         Loading...
                     </p>
                 {:then _}
-                    <!--            <NavigationTrayComponent :current-time="currentTime"/>-->
-                    <div>
-                        <!--                <HeaderComponent :title="header" v-for="header in headers"/>-->
-                        <div class="grid grid-cols-7 gap-1">
-                            <!--{#each api_days as day}-->
-                            <!--    <slot class="grid">-->
-                            <!--        <Day {day} class="day"/>-->
-                            <!--    </slot>-->
-                            <!--{/each}-->
-                        </div>
+                    <!--                    <NavigationTrayComponent :current-time="currentTime"/>-->
+                    <!--                    <HeaderComponent :title="header" v-for="header in headers"/>-->
+                    <div class="grid grid-cols-7 gap-1">
+                        {#each days as day}
+                            <DayComp {day}/>
+                        {/each}
                     </div>
                 {/await}
             {/if}

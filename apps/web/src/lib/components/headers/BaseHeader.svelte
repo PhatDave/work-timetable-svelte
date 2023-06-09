@@ -1,5 +1,5 @@
 <script lang="ts">
-    import ThemeToggle from '$components/theme/ThemeToggle.svelte';
+	import ThemeToggle from '$components/theme/ThemeToggle.svelte';
 </script>
 
 <div class="flex h-20 items-center justify-between px-4" data-tauri-drag-region>

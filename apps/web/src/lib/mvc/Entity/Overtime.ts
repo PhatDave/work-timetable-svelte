@@ -1,4 +1,4 @@
 export type Overtime = {
-    id: string;
-    hours: number;
-}
+	id: string;
+	hours: number;
+};
