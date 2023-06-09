@@ -1,4 +1,4 @@
-import DayMapper from '$lib/mvc/Mapper/DayMapper';
+import Mapper from '$lib/mvc/Mapper/mapper';
 import DayRepository from '$lib/mvc/Repository/DayRepository';
 import type { Day } from '$lib/mvc/Entity/Day';
 import { build_month } from '$lib/utils/DateUtils';
@@ -7,7 +7,7 @@ import type { APIResponseDTO } from '$lib/mvc/DTO/APIResponseDTO';
 
 export default class DayService {
 	public static readonly cached_now: Date = new Date();
-	private readonly mapper: DayMapper = new DayMapper();
+	private readonly mapper: Mapper = new Mapper();
 	private readonly repository: DayRepository = new DayRepository();
 
 	public static is_same_month(datetime1: Date, datetime2: Date) {
@@ -23,6 +23,10 @@ export default class DayService {
 			datetime1.getMonth() === datetime2.getMonth() &&
 			datetime1.getFullYear() === datetime2.getFullYear()
 		);
+	}
+
+	public static is_transient(day: Day): boolean {
+		return !day.id;
 	}
 
 	public async get_this_month_days_full(): Promise<Day[]> {
@@ -74,6 +78,14 @@ export default class DayService {
 		const api_data: APIResponseDTO =
 			await this.repository.get_all_days_full(start, end);
 		return this.mapper.to_entity(api_data);
+	}
+
+	public async get_by_date(date: Date): Promise<Day> {
+		const dto: APIResponseDTO = await this.repository.get_by_date(date);
+		if (dto.totalItems === 0) {
+			return this.create({ name: date.toISOString() });
+		}
+		return this.mapper.to_entity_1(dto.items[0]);
 	}
 
 	public async create(day: RequestDayDTO): Promise<Day> {

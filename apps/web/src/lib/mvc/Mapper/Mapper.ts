@@ -7,7 +7,7 @@ import type { Worktime } from '$lib/mvc/Entity/Worktime';
 import type { WorktimeDTO } from '$lib/mvc/DTO/WorktimeDTO';
 import { datetime_to_date } from '$lib/utils/DateUtils';
 
-export default class DayMapper {
+export default class Mapper {
 	to_entity(data: APIResponseDTO): Day[] {
 		const out: Day[] = [];
 

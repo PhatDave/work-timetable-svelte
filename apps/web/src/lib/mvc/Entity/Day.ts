@@ -8,7 +8,3 @@ export type Day = {
 	work_time: Worktime[];
 	overtime: Overtime[];
 };
-
-export function is_transient(day: Day): boolean {
-	return !day.id;
-}

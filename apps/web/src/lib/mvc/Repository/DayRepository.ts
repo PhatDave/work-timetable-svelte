@@ -30,6 +30,14 @@ export default class DayRepository {
 		return await res.json();
 	}
 
+	public async get_by_date(date: Date): Promise<APIResponseDTO> {
+		const url = `${this.day_api_url}?filter=(name ~ '${
+			date.toISOString().split('T')[0]
+		}')`;
+		const res = await fetch(url);
+		return await res.json();
+	}
+
 	public async create(dto: RequestDayDTO): Promise<DayDTO> {
 		const res = await fetch(this.day_api_url, {
 			method: 'POST',
