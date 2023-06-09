@@ -5,8 +5,6 @@
 	export let day: Day;
 	export let work_date: Date = DayService.cached_now;
 
-	const day_service = new DayService();
-
 	let work_hours = 0;
 	let overtime_hours = 0;
 
@@ -28,7 +26,7 @@
 </script>
 
 <template>
-    <div class="flex flex-col p-1 w-[8vw] h-[12vh] select-none
+    <div class="flex flex-col p-1 w-[8vw] h-[11vh] select-none
          {is_current_month ? 'border-[1px] border-sky-300' : 'border-[1px] border-gray-500 opacity-40'}
          {is_current_day ? '!border-2 !border-dashed !border-fuchsia-500' : ''}">
         <div class="text-center font-bold text-lg p-0"

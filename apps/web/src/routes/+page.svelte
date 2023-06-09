@@ -4,6 +4,7 @@
 	import type {Day} from "$lib/mvc/Entity/Day";
 	import DayComp from "$components/DayComp.svelte";
 	import NavigationComp from "$components/NavigationComp.svelte";
+	import TotalsComp from "$components/TotalsComp.svelte";
 
 	const day_service = new DayService();
 
@@ -29,7 +30,7 @@
 </script>
 
 <template>
-    <div class="form-control flex-1 items-center justify-center">
+    <div class="form-control">
         <BackdropContainer>
             {#if !logged_in}
                 <div class="content-center text-center flex flex-col bg-transparent">
@@ -43,7 +44,7 @@
                         Loading...
                     </p>
                 {:then _}
-                    <div class="flex flex-col items-center">
+                    <div class="flex flex-col items-center flex-start">
                         <div class="w-100">
                             <NavigationComp {work_date} on:update={work_date_update}/>
                         </div>
@@ -51,6 +52,9 @@
                             {#each days as day}
                                 <DayComp {day} {work_date}/>
                             {/each}
+                        </div>
+                        <div class="w-100">
+                            <TotalsComp {days} {work_date}/>
                         </div>
                     </div>
                     <!--                    <NavigationTrayComponent :current-time="currentTime"/>-->
