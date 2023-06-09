@@ -30,7 +30,7 @@
 </script>
 
 <template>
-    <div class="form-control">
+    <div class="form-control flex content-center items-center justify-center">
         <BackdropContainer>
             {#if !logged_in}
                 <div class="content-center text-center flex flex-col bg-transparent">
@@ -40,7 +40,7 @@
                 </div>
             {:else}
                 {#await promise}
-                    <p>
+                    <p class="text-4xl font-extrabold text-red-600 text-center">
                         Loading...
                     </p>
                 {:then _}
