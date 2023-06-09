@@ -24,16 +24,15 @@
 </script>
 
 <template>
-    <div class="flex flex-col p-1 w-[8vw] h-[12vh]
-         {is_current_month ? 'border-[1px] border-sky-300' : 'border-[1px] border-gray-500'}
-         {is_current_day ? '!border-2 !border-dashed !border-fuchsia-500' : ''}"
-         class:opacity-40={!is_current_month}>
+    <div class="flex flex-col p-1 w-[8vw] h-[12vh] select-none
+         {is_current_month ? 'border-[1px] border-sky-300' : 'border-[1px] border-gray-500 opacity-40'}
+         {is_current_day ? '!border-2 !border-dashed !border-fuchsia-500' : ''}">
         <div class="text-center font-bold text-lg p-0"
              class:text-fuchsia-500={is_current_day}>
             {#if date.length === 1}0{/if}{date}.
             {#if month.length === 1}0{/if}{month}.
         </div>
-        <div class="text-center font-extrabold text-4xl p-0 py-2">
+        <div class="text-center font-extrabold shadow-2xl text-4xl p-0 py-2">
             <span class:text-sky-500={work_hours >= 8}>{work_hours}</span>
             {#if overtime_hours > 0}
                 <span class="text-red-500">+ {overtime_hours}</span>

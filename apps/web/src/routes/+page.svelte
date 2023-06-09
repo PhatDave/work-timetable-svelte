@@ -15,8 +15,24 @@
 	}
 
 	let days: Day[] = [];
-	let promise = day_service.get_this_month_days_full();
-	promise.then((data: Day[]) => days = data);
+	let work_date: Date = new Date();
+	let promise: Promise<Day[]>;
+	$: {
+		promise = day_service.get_days_of_month_full(work_date);
+		promise.then((data: Day[]) => days = data);
+	}
+
+	function month_forward() {
+		work_date.setMonth(work_date.getMonth() + 1);
+		promise = day_service.get_days_of_month_full(work_date);
+		promise.then((data: Day[]) => days = data);
+	}
+
+	function month_backward() {
+		work_date.setMonth(work_date.getMonth() - 1);
+		promise = day_service.get_days_of_month_full(work_date);
+		promise.then((data: Day[]) => days = data);
+	}
 </script>
 
 <template>
@@ -34,6 +50,8 @@
                         Loading...
                     </p>
                 {:then _}
+                    <button class="btn" on:click={month_backward}>Backward</button>
+                    <button class="btn" on:click={month_forward}>Forward</button>
                     <!--                    <NavigationTrayComponent :current-time="currentTime"/>-->
                     <!--                    <HeaderComponent :title="header" v-for="header in headers"/>-->
                     <div class="grid grid-cols-7 gap-1">

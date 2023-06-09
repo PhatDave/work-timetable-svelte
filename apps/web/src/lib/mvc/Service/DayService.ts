@@ -12,10 +12,13 @@ export default class DayService {
 	private readonly cache_now: Date = new Date();
 
 	public async get_this_month_days_full(): Promise<Day[]> {
-		const now: Date = new Date();
+		return this.get_days_of_month_full(this.cache_now);
+	}
+
+	public async get_days_of_month_full(datetime: Date): Promise<Day[]> {
 		const this_month: Day[] = build_month(
-			now.getMonth() + 1,
-			now.getFullYear()
+			datetime.getMonth() + 1,
+			datetime.getFullYear()
 		);
 
 		const first_day: Date = new Date(this_month[0].datetime);
