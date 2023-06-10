@@ -8,8 +8,20 @@ export default class OvertimeService {
 	private readonly mapper: Mapper = new Mapper();
 	private readonly repository: OvertimeRepository = new OvertimeRepository();
 
-	public async create(hours: number, day: Day): Promise<Overtime> {
-		const dto: OvertimeDTO = await this.repository.create(hours, day);
+	public async create(
+		hours: number,
+		description: string,
+		day: Day
+	): Promise<Overtime> {
+		const dto: OvertimeDTO = await this.repository.create(
+			hours,
+			description,
+			day
+		);
 		return this.mapper.to_entity_2(dto);
+	}
+
+	public async delete(id: string) {
+		await this.repository.delete(id);
 	}
 }

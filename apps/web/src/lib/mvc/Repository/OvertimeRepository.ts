@@ -1,14 +1,19 @@
 import type { Day } from '$lib/mvc/Entity/Day';
 import DayService from '$lib/mvc/Service/DayService';
 import type { OvertimeDTO } from '$lib/mvc/DTO/OvertimeDTO';
-import UserService from '$lib/mvc/Service/UserService';
+import { user } from '$stores/User';
+import { get } from 'svelte/store';
 
 export default class OvertimeRepository {
 	private readonly overtime_api_url: string =
 		'https://pocketbase-work-timetable.site.quack-lab.dev/api/collections/overtime/records';
 	private readonly day_service = new DayService();
 
-	public async create(hours: number, day: Day): Promise<OvertimeDTO> {
+	public async create(
+		hours: number,
+		description: string,
+		day: Day
+	): Promise<OvertimeDTO> {
 		if (DayService.is_transient(day)) {
 			day = await this.day_service.get_by_date(day.datetime);
 		}
@@ -18,7 +23,8 @@ export default class OvertimeRepository {
 			body: JSON.stringify({
 				hours,
 				day: day.id,
-				user: UserService.logged_user?.id
+				user: get(user)?.id,
+				description
 			}),
 			headers: {
 				'Content-Type': 'application/json'
@@ -26,5 +32,11 @@ export default class OvertimeRepository {
 		});
 
 		return await res.json();
+	}
+
+	public async delete(id: string) {
+		await fetch(`${this.overtime_api_url}/${id}`, {
+			method: 'DELETE'
+		});
 	}
 }

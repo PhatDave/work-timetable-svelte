@@ -26,7 +26,7 @@ export default class DayService {
 	}
 
 	public static is_transient(day: Day): boolean {
-		return !day.id;
+		return !day?.id;
 	}
 
 	public async get_days_of_month_full(datetime: Date): Promise<Day[]> {
