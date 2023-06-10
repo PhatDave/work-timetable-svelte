@@ -1,6 +1,6 @@
 <script lang="ts">
 	import ThemeToggle from '$components/theme/ThemeToggle.svelte';
-	import UserService from "$lib/mvc/Service/UserService";
+	import {user} from "$stores/User";
 </script>
 
 <div class="flex h-20 items-center justify-between px-4" data-tauri-drag-region>
@@ -15,10 +15,10 @@
         </ul>
     </nav>
 
-    {#if UserService.is_logged_in()}
-        <div>
-            {UserService.logged_user?.name}
-        </div>
+    {#if $user}
+        <button class="btn btn-outline" on:click={user.logout}>
+            {$user.name}
+        </button>
     {/if}
     <div class="flex items-center space-x-4 [&>*:hover]:text-primary [&>*]:transition-all [&>*]:duration-300">
         <ThemeToggle/>

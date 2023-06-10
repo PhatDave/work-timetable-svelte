@@ -3,14 +3,15 @@ import type { User } from '$lib/mvc/Entity/User';
 import type { APIResponseDTO } from '$lib/mvc/DTO/APIResponseDTO';
 import type { UserDTO } from '$lib/mvc/DTO/UserDTO';
 import Mapper from '$lib/mvc/Mapper/Mapper';
+import { get, writable } from 'svelte/store';
 
 export default class UserService {
-	public static logged_user: User | undefined = undefined;
+	public static logged_user = writable<User | null | undefined>(null);
 	private readonly user_repository = new UserRepository();
 	private readonly mapper: Mapper = new Mapper();
 
 	public static is_logged_in(): boolean {
-		return UserService.logged_user !== undefined;
+		return get(UserService.logged_user) !== undefined;
 	}
 
 	public async get_by_name(name: string): Promise<User | undefined> {
@@ -28,16 +29,13 @@ export default class UserService {
 		return this.mapper.to_entity_7(res);
 	}
 
-	public async update_logged_user(name: string): Promise<User> {
+	public async update_logged_user(name: string) {
 		let user = await this.get_by_name(name);
-		if (user) {
-			UserService.logged_user = user;
-		} else {
+		if (!user) {
 			user = await this.create(name);
-			UserService.logged_user = user;
 		}
+		UserService.logged_user.set(user);
 		localStorage.setItem('user', name);
-		console.log(`Update user ${name} - ${UserService.logged_user}`);
-		return UserService.logged_user;
+		console.log(`Update user ${name} - ${get(UserService.logged_user)}`);
 	}
 }
