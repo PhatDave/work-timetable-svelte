@@ -27,7 +27,7 @@
 </script>
 
 <template>
-    <div class="flex justify-between py-4">
+    <div class="flex justify-between py-4 select-none">
         <button class="btn text-lg btn-outline w-[20vw]" on:click={month_backward}>&lt&lt&lt</button>
         <h1 class="text-4xl content-center text-center font-bold px-8"
             class:text-emerald-500={is_current_month}>{display_string}</h1>

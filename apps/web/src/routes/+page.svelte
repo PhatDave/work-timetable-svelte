@@ -10,12 +10,10 @@
 
 	const day_service = new DayService();
 
-	let days: Day[] = [];
 	let work_date: Date = new Date();
 	let promise: Promise<Day[]>;
 	$: {
 		promise = day_service.get_days_of_month_full(work_date);
-		promise.then((data: Day[]) => days = data);
 	}
 
 	function work_date_update(event: CustomEvent<Date>) {
@@ -49,7 +47,7 @@
                                transition:fade={{duration: 250}}>
                                 Loading...
                             </p>
-                        {:then _}
+                        {:then days}
                             <div class="flex flex-col items-center flex-start [grid-area:stack]">
                                 <div class="w-100">
                                     <NavigationComp {work_date} on:update={work_date_update}/>

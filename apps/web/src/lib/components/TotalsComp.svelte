@@ -23,7 +23,7 @@
 </script>
 
 <template>
-    <div class="text-5xl py-3 shadow-2xl font-extrabold">
+    <div class="text-5xl py-3 shadow-2xl font-extrabold select-none">
         <span class="text-sky-500">{work_hours}</span>
         <span class="text-red-500">+ {overtime_hours}</span>
     </div>
