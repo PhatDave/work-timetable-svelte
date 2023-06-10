@@ -31,14 +31,17 @@
         <BackdropContainer>
             {#await user.initialize() then _}
                 {#if !$user}
-                    <div class="content-center text-center flex flex-col bg-transparent">
+                    <form class="content-center text-center flex flex-col bg-transparent" action="#"
+                          on:submit|preventDefault={() => {}}>
                         <p class="text-4xl shadow p-10">Username</p>
                         <input class="text-5xl h-auto border-cyan-500 border-2 input input-bordered"
-                               bind:value={username}/>
-                        <button class="btn btn-lg btn-primary" on:click={() => user.login(username)}>
+                               bind:value={username}
+                               on:focusout={() => user.login(username)}/>
+                        <button class="btn btn-lg btn-primary capitalize" type=submit
+                                on:click={() => user.login(username)}>
                             Login
                         </button>
-                    </div>
+                    </form>
                 {:else}
                     <div class="grid [grid-template-areas:'stack']">
                         {#await promise}
