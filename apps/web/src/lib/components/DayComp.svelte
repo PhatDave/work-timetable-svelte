@@ -83,7 +83,7 @@
     <div class="flex flex-col p-1 w-[8vw] h-[11vh] select-none cursor-pointer
          {is_current_month ? 'border-[1px] border-sky-300' : 'border-[1px] border-gray-500 opacity-40'}
          {is_current_day ? '!border-2 !border-dashed !border-fuchsia-500' : ''}"
-         on:auxclick|preventDefault={complete_workday}
+         on:auxclick={complete_workday}
          on:click={() => modal.showModal()}>
         <div class="text-center font-bold text-lg p-0"
              class:text-fuchsia-500={is_current_day}>

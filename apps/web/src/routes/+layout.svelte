@@ -18,6 +18,7 @@
 	}
 </script>
 
+<svelte:body on:contextmenu|preventDefault/>
 <svelte:head>
     <meta content="SvelteKit Template" name="description"/>
 
