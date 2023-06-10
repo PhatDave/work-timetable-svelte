@@ -29,15 +29,15 @@ export default class DayService {
 		return !day.id;
 	}
 
-	public async get_this_month_days_full(): Promise<Day[]> {
-		return this.get_days_of_month_full(DayService.cached_now);
-	}
-
 	public async get_days_of_month_full(datetime: Date): Promise<Day[]> {
 		const this_month: Day[] = build_month(
 			datetime.getMonth() + 1,
 			datetime.getFullYear()
 		);
+
+		// if (!get(user)) {
+		// 	return Promise.resolve(this_month);
+		// }
 
 		const first_day: Date = new Date(this_month[0].datetime);
 		const last_day: Date = new Date(
@@ -64,14 +64,6 @@ export default class DayService {
 		}
 
 		return Promise.resolve(this_month);
-	}
-
-	public async get_all_days(start: Date, end: Date): Promise<Day[]> {
-		const api_data: APIResponseDTO = await this.repository.get_all_days(
-			start,
-			end
-		);
-		return this.mapper.to_entity(api_data);
 	}
 
 	public async get_all_days_full(start: Date, end: Date): Promise<Day[]> {
