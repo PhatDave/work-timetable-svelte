@@ -46,7 +46,8 @@ export default class Mapper {
 	to_entity_2(data: OvertimeDTO): Overtime {
 		return {
 			hours: data.hours,
-			id: data.id
+			id: data.id,
+			description: data.description
 		};
 	}
 

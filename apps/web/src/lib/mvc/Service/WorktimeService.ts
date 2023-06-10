@@ -12,4 +12,8 @@ export default class WorktimeService {
 		const dto: WorktimeDTO = await this.repository.create(hours, day);
 		return this.mapper.to_entity_3(dto);
 	}
+
+	public async delete(id: string) {
+		await this.repository.delete(id);
+	}
 }

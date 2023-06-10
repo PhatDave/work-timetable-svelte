@@ -1,7 +1,8 @@
 import type { Day } from '$lib/mvc/Entity/Day';
 import DayService from '$lib/mvc/Service/DayService';
 import type { WorktimeDTO } from '$lib/mvc/DTO/WorktimeDTO';
-import UserService from '$lib/mvc/Service/UserService';
+import { user } from '$stores/User';
+import { get } from 'svelte/store';
 
 export default class WorktimeRepository {
 	private readonly worktime_api_url: string =
@@ -18,7 +19,7 @@ export default class WorktimeRepository {
 			body: JSON.stringify({
 				hours,
 				day: day.id,
-				user: UserService.logged_user?.id
+				user: get(user)?.id
 			}),
 			headers: {
 				'Content-Type': 'application/json'
@@ -26,5 +27,11 @@ export default class WorktimeRepository {
 		});
 
 		return await res.json();
+	}
+
+	public async delete(id: string) {
+		await fetch(`${this.worktime_api_url}/${id}`, {
+			method: 'DELETE'
+		});
 	}
 }

@@ -30,7 +30,7 @@
             {#await user.initialize() then _}
                 {#if !$user}
                     <form class="content-center text-center flex flex-col bg-transparent" action="#"
-                          on:submit|preventDefault={() => {}}>
+                          on:submit|preventDefault>
                         <p class="text-4xl shadow p-10">Username</p>
                         <input class="text-5xl h-auto border-cyan-500 border-2 input input-bordered"
                                bind:value={username}
