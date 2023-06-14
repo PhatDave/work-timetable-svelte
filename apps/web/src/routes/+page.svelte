@@ -30,12 +30,12 @@
 			{#await user.initialize() then _}
 				{#if !$user}
 					<form
-						class="content-center text-center flex flex-col bg-transparent"
+						class="flex flex-col content-center bg-transparent text-center"
 						action="#"
 						on:submit|preventDefault>
-						<p class="text-4xl shadow p-10">Username</p>
+						<p class="p-10 text-4xl shadow">Username</p>
 						<input
-							class="text-5xl h-auto border-cyan-500 border-2 input input-bordered"
+							class="input input-bordered h-auto border-2 border-cyan-500 text-5xl"
 							bind:value={username}
 							on:focusout={() => user.login(username)} />
 						<button
@@ -49,7 +49,7 @@
 					<div class="grid [grid-template-areas:'stack']">
 						{#await promise then days}
 							<div
-								class="flex flex-col items-center flex-start [grid-area:stack]"
+								class="flex-start flex flex-col items-center [grid-area:stack]"
 								transition:fade={{ duration: 100 }}>
 								<div class="w-100">
 									<NavigationComp

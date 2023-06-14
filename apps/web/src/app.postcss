@@ -5,27 +5,27 @@
 @tailwind utilities;
 
 html {
-  -webkit-font-smoothing: antialiased;
+	-webkit-font-smoothing: antialiased;
 }
 
 @layer utilities {
-  /* Class is used for development purposes only */
-  .dev {
-    @apply border-[1px];
-  }
-  .devo {
-    @apply outline outline-dashed outline-1 outline-primary;
-  }
+	/* Class is used for development purposes only */
+	.dev {
+		@apply border-[1px];
+	}
+	.devo {
+		@apply outline-primary outline outline-dashed outline-1;
+	}
 }
 
 @layer base {
-  input[type='number']::-webkit-inner-spin-button,
-  input[type='number']::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
+	input[type='number']::-webkit-inner-spin-button,
+	input[type='number']::-webkit-outer-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
 }
 
 input[type='number'] {
-  -moz-appearance: textfield;
+	-moz-appearance: textfield;
 }

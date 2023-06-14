@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type {Day} from "$lib/mvc/Entity/Day";
-	import DayService from "$lib/mvc/Service/DayService";
+	import type { Day } from '$lib/mvc/Entity/Day';
+	import DayService from '$lib/mvc/Service/DayService';
 
 	export let days: Day[];
 	export let work_date: Date = DayService.cached_now;
@@ -23,8 +23,8 @@
 </script>
 
 <template>
-    <div class="text-5xl py-3 shadow-2xl font-extrabold select-none">
-        <span class="text-sky-500">{work_hours}</span>
-        <span class="text-red-500">+ {overtime_hours}</span>
-    </div>
+	<div class="select-none py-3 text-5xl font-extrabold shadow-2xl">
+		<span class="text-sky-500">{work_hours}</span>
+		<span class="text-red-500">+ {overtime_hours}</span>
+	</div>
 </template>
