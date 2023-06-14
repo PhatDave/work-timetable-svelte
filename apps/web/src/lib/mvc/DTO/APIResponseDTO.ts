@@ -1,7 +1,7 @@
 export type APIResponseDTO = {
-	items: object[];
-	page: number;
-	perPage: number;
-	totalItems: number;
-	totalPages: number;
+    items: object[];
+    page: number;
+    perPage: number;
+    totalItems: number;
+    totalPages: number;
 };
