@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type {Day} from "$lib/mvc/Entity/Day";
-	import DayService from "$lib/mvc/Service/DayService";
-	import WorktimeService from "$lib/mvc/Service/WorktimeService";
-	import type {Worktime} from "$lib/mvc/Entity/Worktime";
-	import OvertimeService from "$lib/mvc/Service/OvertimeService";
-	import type {Overtime} from "$lib/mvc/Entity/Overtime";
+	import type { Day } from '$lib/mvc/Entity/Day';
+	import DayService from '$lib/mvc/Service/DayService';
+	import WorktimeService from '$lib/mvc/Service/WorktimeService';
+	import type { Worktime } from '$lib/mvc/Entity/Worktime';
+	import OvertimeService from '$lib/mvc/Service/OvertimeService';
+	import type { Overtime } from '$lib/mvc/Entity/Overtime';
 
 	export let day: Day;
 	export let work_date: Date = DayService.cached_now;
@@ -44,10 +44,13 @@
 
 	let work_time_input = NaN;
 	let overtime_input = NaN;
-	let overtime_desc_input = "";
+	let overtime_desc_input = '';
 
 	async function add_worktime() {
-		const worktime: Worktime = await worktime_service.create(work_time_input, day)
+		const worktime: Worktime = await worktime_service.create(
+			work_time_input,
+			day
+		);
 		day.work_time.push(worktime);
 		day = day;
 		work_time_input = NaN;
@@ -61,11 +64,15 @@
 	}
 
 	async function add_overtime() {
-		const overtime: Overtime = await overtime_service.create(overtime_input, overtime_desc_input, day)
+		const overtime: Overtime = await overtime_service.create(
+			overtime_input,
+			overtime_desc_input,
+			day
+		);
 		day.overtime.push(overtime);
 		day = day;
 		overtime_input = NaN;
-		overtime_desc_input = "";
+		overtime_desc_input = '';
 	}
 
 	async function delete_overtime(worktime: Overtime) {
@@ -73,100 +80,117 @@
 		day.overtime = day.overtime.filter(wt => wt.id !== worktime.id);
 		day = day;
 		overtime_input = NaN;
-		overtime_desc_input = "";
+		overtime_desc_input = '';
 	}
 
 	let modal: HTMLDialogElement;
 </script>
 
 <template>
-    <div class="flex flex-col p-1 w-[8vw] h-[11vh] select-none cursor-pointer
-         {is_current_month ? 'border-[1px] border-sky-300' : 'border-[1px] border-gray-500 opacity-40'}
+	<div
+		class="flex h-[11vh] w-[8vw] cursor-pointer select-none flex-col p-1
+         {is_current_month
+			? 'border-[1px] border-sky-300'
+			: 'border-[1px] border-gray-500 opacity-40'}
          {is_current_day ? '!border-2 !border-dashed !border-fuchsia-500' : ''}"
-         on:auxclick={complete_workday}
-         on:click={() => modal.showModal()}>
-        <div class="text-center font-bold text-lg p-0"
-             class:text-fuchsia-500={is_current_day}>
-            {#if date.length === 1}0{/if}{date}.
-            {#if month.length === 1}0{/if}{month}.
-        </div>
-        <div class="text-center font-extrabold shadow-2xl text-2xl p-0 py-2">
-            <span class:text-sky-500={work_hours >= 8}>{work_hours}</span>
-            {#if overtime_hours > 0}
-                <span class="text-red-500">+ {overtime_hours}</span>
-            {/if}
-        </div>
-    </div>
+		on:auxclick={complete_workday}
+		on:click={() => modal.showModal()}>
+		<div
+			class="p-0 text-center text-lg font-bold"
+			class:text-fuchsia-500={is_current_day}>
+			{#if date.length === 1}0{/if}{date}.
+			{#if month.length === 1}0{/if}{month}.
+		</div>
+		<div class="p-0 py-2 text-center text-2xl font-extrabold shadow-2xl">
+			<span class:text-sky-500={work_hours >= 8}>{work_hours}</span>
+			{#if overtime_hours > 0}
+				<span class="text-red-500">+ {overtime_hours}</span>
+			{/if}
+		</div>
+	</div>
 
-    <dialog bind:this={modal} class="modal border-cyan-500">
-        <form class="modal-box select-none" method="dialog">
-            <div class="form-control gap-y-5">
-                <table class="dev w-full table table-zebra rounded-box mt-2 mb-4">
-                    <thead>
-                    <tr>
-                        <th>id</th>
-                        <th>hours</th>
-                        <th>description</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {#each day.work_time as time}
-                        <tr on:click={delete_worktime(time)} class="hover:!bg-pink-500/30 cursor-pointer">
-                            <td class="p-1 border-fuchsia-500 font-mono">{time.id}</td>
-                            <td>{time.hours}h</td>
-                            <td>
-                                {#if time.description}
-                                    {@html time.description}
-                                {/if}
-                            </td>
-                        </tr>
-                    {/each}
-                    </tbody>
-                </table>
-            </div>
-            <form on:submit|preventDefault={add_worktime}>
-                <input autofocus bind:value={work_time_input}
-                       class="input input-sm w-full"
-                       type="number">
-                <button class="hidden" type="submit"></button>
-            </form>
-            <div class="divider"></div>
-            <div class="form-control gap-y-5">
-                <table class="dev w-full table table-zebra rounded-box mt-2 mb-4">
-                    <thead>
-                    <tr>
-                        <th>id</th>
-                        <th>hours</th>
-                        <th>description</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {#each day.overtime as time}
-                        <tr on:click={delete_overtime(time)} class="hover:!bg-pink-500/30 cursor-pointer">
-                            <td class="p-1 border-fuchsia-500 font-mono">{time.id}</td>
-                            <td>{time.hours}h</td>
-                            <td class="flex items-center">
-                                {#if time.description}
-                                    {@html time.description}
-                                {/if}
-                            </td>
-                        </tr>
-                    {/each}
-                    </tbody>
-                </table>
-            </div>
-            <form on:submit|preventDefault={add_overtime}>
-                <input autofocus bind:value={overtime_input}
-                       class="input input-sm w-full"
-                       type="number">
-                <input bind:value={overtime_desc_input}
-                       class="input input-sm w-full"
-                       type="text">
-                <button class="hidden" type="submit"></button>
-            </form>
-        </form>
-        <form class="modal-backdrop" method="dialog">
-            <button>close</button>
-        </form>
-    </dialog>
+	<dialog bind:this={modal} class="modal border-cyan-500">
+		<form class="modal-box select-none" method="dialog">
+			<div class="form-control gap-y-5">
+				<table
+					class="dev table-zebra rounded-box mb-4 mt-2 table w-full">
+					<thead>
+						<tr>
+							<th>id</th>
+							<th>hours</th>
+							<th>description</th>
+						</tr>
+					</thead>
+					<tbody>
+						{#each day.work_time as time}
+							<tr
+								on:click={delete_worktime(time)}
+								class="cursor-pointer hover:!bg-pink-500/30">
+								<td class="border-fuchsia-500 p-1 font-mono"
+									>{time.id}</td>
+								<td>{time.hours}h</td>
+								<td>
+									{#if time.description}
+										{@html time.description}
+									{/if}
+								</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+			</div>
+			<form on:submit|preventDefault={add_worktime}>
+				<input
+					autofocus
+					bind:value={work_time_input}
+					class="input input-sm w-full"
+					type="number" />
+				<button class="hidden" type="submit" />
+			</form>
+			<div class="divider" />
+			<div class="form-control gap-y-5">
+				<table
+					class="dev table-zebra rounded-box mb-4 mt-2 table w-full">
+					<thead>
+						<tr>
+							<th>id</th>
+							<th>hours</th>
+							<th>description</th>
+						</tr>
+					</thead>
+					<tbody>
+						{#each day.overtime as time}
+							<tr
+								on:click={delete_overtime(time)}
+								class="cursor-pointer hover:!bg-pink-500/30">
+								<td class="border-fuchsia-500 p-1 font-mono"
+									>{time.id}</td>
+								<td>{time.hours}h</td>
+								<td class="flex items-center">
+									{#if time.description}
+										{@html time.description}
+									{/if}
+								</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+			</div>
+			<form on:submit|preventDefault={add_overtime}>
+				<input
+					autofocus
+					bind:value={overtime_input}
+					class="input input-sm w-full"
+					type="number" />
+				<input
+					bind:value={overtime_desc_input}
+					class="input input-sm w-full"
+					type="text" />
+				<button class="hidden" type="submit" />
+			</form>
+		</form>
+		<form class="modal-backdrop" method="dialog">
+			<button>close</button>
+		</form>
+	</dialog>
 </template>
