@@ -1,4 +1,4 @@
-import type {Day} from '$lib/mvc/Entity/Day';
+import type {Day} from '$lib/Entity/Day';
 
 const MONTH_COLUMNS = 7;
 const MONTH_ROWS = 6;

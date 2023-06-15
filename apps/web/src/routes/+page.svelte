@@ -1,24 +1,29 @@
 <script lang="ts">
     import BackdropContainer from '$lib/components/containers/BackdropContainer.svelte';
-    import DayService from '$lib/mvc/Service/DayService';
-    import type {Day} from '$lib/mvc/Entity/Day';
-    import DayComp from '$components/DayComp.svelte';
     import NavigationComp from '$components/NavigationComp.svelte';
     import TotalsComp from '$components/TotalsComp.svelte';
     import {fade} from 'svelte/transition';
     import {user} from '$stores/User';
+    import {days} from "$stores/Days";
+    import {get_api_days} from "$lib/APIInterface";
+    import {work_date} from "$stores/WorkDate";
+    import {onDestroy} from "svelte";
+    import DayComp from "$components/DayComp.svelte";
 
-    const day_service = new DayService();
+    let user_init_promise = user.initialize();
 
-    let work_date: Date = new Date();
-    let promise: Promise<Day[]>;
-    $: {
-        promise = day_service.get_days_of_month_full(work_date);
+    async function do_update() {
+        const data = await get_api_days();
+        days.set(data);
     }
 
-    function work_date_update(event: CustomEvent<Date>) {
-        work_date = event.detail;
-    }
+    const work_date_unsubscribe = work_date.subscribe(do_update);
+    const user_unsubscribe = user.subscribe(do_update);
+
+    onDestroy(() => {
+        work_date_unsubscribe();
+        user_unsubscribe();
+    });
 
     // ---------------------------------------------------------------------------------
     let username = '';
@@ -27,7 +32,7 @@
 <template>
     <div class="form-control flex content-center items-center justify-center">
         <BackdropContainer>
-            {#await user.initialize() then _}
+            {#await user_init_promise then _}
                 {#if !$user}
                     <form
                             class="flex flex-col content-center bg-transparent text-center"
@@ -47,27 +52,21 @@
                     </form>
                 {:else}
                     <div class="grid [grid-template-areas:'stack']">
-                        {#await promise then days}
-                            <div
-                                    class="flex-start flex flex-col items-center [grid-area:stack]"
-                                    transition:fade={{ duration: 100 }}>
-                                <div class="w-100">
-                                    <NavigationComp
-                                            {work_date}
-                                            on:update={work_date_update}/>
-                                </div>
-                                <div class="grid grid-cols-7 gap-1">
-                                    {#each days as day}
-                                        <DayComp {day} {work_date}/>
-                                    {/each}
-                                </div>
-                                <div class="w-100">
-                                    <TotalsComp {days} {work_date}/>
-                                </div>
+                        <div
+                                class="flex-start flex flex-col items-center [grid-area:stack]"
+                                transition:fade={{ duration: 100 }}>
+                            <div class="w-100">
+                                <NavigationComp/>
                             </div>
-                            <!--                    <NavigationTrayComponent :current-time="currentTime"/>-->
-                            <!--                    <HeaderComponent :title="header" v-for="header in headers"/>-->
-                        {/await}
+                            <div class="grid grid-cols-7 gap-1">
+                                {#each $days as day}
+                                    <DayComp {day}/>
+                                {/each}
+                            </div>
+                            <div class="w-100">
+                                <TotalsComp/>
+                            </div>
+                        </div>
                     </div>
                 {/if}
             {/await}

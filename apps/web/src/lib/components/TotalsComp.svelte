@@ -1,25 +1,36 @@
 <script lang="ts">
-    import type {Day} from '$lib/mvc/Entity/Day';
-    import DayService from '$lib/mvc/Service/DayService';
-
-    export let days: Day[];
-    export let work_date: Date = DayService.cached_now;
+    import {days} from "$stores/Days";
+    import {now} from "$stores/Now";
+    import {is_same_month} from "$lib/utils";
+    import {onDestroy} from "svelte";
+    import type {Day} from "$lib/Entity/Day";
 
     let work_hours = 0;
     let overtime_hours = 0;
 
-    for (let i = 0; i < days.length; i++) {
-        const day = days[i];
-        if (DayService.is_same_month(day.datetime, work_date) === false) {
-            continue;
-        }
-        for (let i = 0; i < day.overtime.length; i++) {
-            overtime_hours += day.overtime[i].hours;
-        }
-        for (let i = 0; i < day.work_time.length; i++) {
-            work_hours += day.work_time[i].hours;
+    let test: {
+        set: (this: void, value: Day[]) => void;
+        subscribe: (this: void, run: Subscriber<Day[]>, invalidate?: Invalidator<Day[]>) => Unsubscriber;
+        update: (this: void, updater: Updater<Day[]>) => void;
+        set_day: (day: Day) => void
+    } = $days;
+
+    function recalculate() {
+        work_hours = 0;
+        overtime_hours = 0;
+
+        for (const day of $days) {
+            if (is_same_month(day.datetime, $now) === false) {
+                continue;
+            }
+
+            work_hours += day.work_time.reduce((acc, work_time) => acc + work_time.hours, 0);
+            overtime_hours += day.overtime.reduce((acc, overtime) => acc + overtime.hours, 0);
         }
     }
+
+    const unsubscribe = days.subscribe(recalculate);
+    onDestroy(unsubscribe);
 </script>
 
 <template>

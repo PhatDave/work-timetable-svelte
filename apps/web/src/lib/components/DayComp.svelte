@@ -1,16 +1,14 @@
 <script lang="ts">
-    import type {Day} from '$lib/mvc/Entity/Day';
-    import DayService from '$lib/mvc/Service/DayService';
-    import WorktimeService from '$lib/mvc/Service/WorktimeService';
-    import type {Worktime} from '$lib/mvc/Entity/Worktime';
-    import OvertimeService from '$lib/mvc/Service/OvertimeService';
-    import type {Overtime} from '$lib/mvc/Entity/Overtime';
+    import type {Day} from '$lib/Entity/Day';
+    import {is_same_day, is_same_month} from "$lib/utils";
+    import {get} from "svelte/store";
+    import {work_date} from "$stores/WorkDate";
+    import type {Worktime} from "$lib/Entity/Worktime";
+    import type {Overtime} from "$lib/Entity/Overtime";
+    import {create_overtime, create_worktime, delete_overtime_api, delete_worktime_api} from "$lib/APIInterface";
+    import {days} from "$stores/Days";
 
     export let day: Day;
-    export let work_date: Date = DayService.cached_now;
-
-    const worktime_service = new WorktimeService();
-    const overtime_service = new OvertimeService();
 
     let work_hours = 0;
     let overtime_hours = 0;
@@ -27,19 +25,19 @@
         }
     }
 
-    // const is_current_month = day_service.is_current_month(day);
-    // const is_current_day = day_service.is_current_day(day);
-
-    const is_current_month = DayService.is_same_month(work_date, day.datetime);
-    const is_current_day = DayService.is_same_day(work_date, day.datetime);
+    const is_current_month = is_same_month(get(work_date), day.datetime);
+    const is_current_day = is_same_day(get(work_date), day.datetime);
 
     const date = String(day.datetime.getDate());
     const month = String(day.datetime.getMonth() + 1);
 
     async function complete_workday() {
-        const worktime: Worktime = await worktime_service.create(8, day);
-        day.work_time.push(worktime);
-        day = day;
+        const worktime = await create_worktime(day, 8);
+        if (worktime) {
+            day.work_time.push(worktime);
+            days.set_day(day);
+            day = day;
+        }
     }
 
     let work_time_input = NaN;
@@ -47,40 +45,46 @@
     let overtime_desc_input = '';
 
     async function add_worktime() {
-        const worktime: Worktime = await worktime_service.create(
-            work_time_input,
-            day
-        );
-        day.work_time.push(worktime);
-        day = day;
-        work_time_input = NaN;
+        if (work_time_input) {
+            const worktime = await create_worktime(day, work_time_input);
+            if (worktime) {
+                day.work_time.push(worktime);
+                days.set_day(day);
+                day = day;
+            }
+            work_time_input = NaN;
+        }
     }
 
     async function delete_worktime(worktime: Worktime) {
-        await worktime_service.delete(worktime.id);
-        day.work_time = day.work_time.filter(wt => wt.id !== worktime.id);
-        day = day;
-        work_time_input = NaN;
+        const res = await delete_worktime_api(worktime);
+        if (res.status === 204) {
+            day.work_time = day.work_time.filter(wt => wt.id !== worktime.id);
+            days.set_day(day);
+            day = day;
+        }
     }
 
     async function add_overtime() {
-        const overtime: Overtime = await overtime_service.create(
-            overtime_input,
-            overtime_desc_input,
-            day
-        );
-        day.overtime.push(overtime);
-        day = day;
-        overtime_input = NaN;
-        overtime_desc_input = '';
+        if (overtime_input && overtime_desc_input) {
+            const overtime = await create_overtime(day, overtime_input, overtime_desc_input);
+            if (overtime) {
+                day.overtime.push(overtime);
+                days.set_day(day);
+                day = day;
+            }
+            overtime_input = NaN;
+            overtime_desc_input = '';
+        }
     }
 
-    async function delete_overtime(worktime: Overtime) {
-        await overtime_service.delete(worktime.id);
-        day.overtime = day.overtime.filter(wt => wt.id !== worktime.id);
-        day = day;
-        overtime_input = NaN;
-        overtime_desc_input = '';
+    async function delete_overtime(overtime: Overtime) {
+        const res = await delete_overtime_api(overtime);
+        if (res.status === 204) {
+            day.overtime = day.overtime.filter(wt => wt.id !== overtime.id);
+            days.set_day(day);
+            day = day;
+        }
     }
 
     let modal: HTMLDialogElement;
@@ -123,8 +127,7 @@
                     </thead>
                     <tbody>
                     {#each day.work_time as time}
-                        <tr
-                                on:click={delete_worktime(time)}
+                        <tr on:click={delete_worktime(time)}
                                 class="cursor-pointer hover:!bg-pink-500/30">
                             <td class="border-fuchsia-500 p-1 font-mono"
                             >{time.id}</td>

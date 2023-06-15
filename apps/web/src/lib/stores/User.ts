@@ -1,8 +1,6 @@
 import {writable} from 'svelte/store';
-import UserService from '$lib/mvc/Service/UserService';
-import type {User} from '$lib/mvc/Entity/User';
-
-const user_service = new UserService();
+import type {User} from '$lib/Entity/User';
+import {get_or_create_user} from "$lib/APIInterface";
 
 const create_store = () => {
     const {subscribe, set, update} = writable<User | null | undefined>(null);
@@ -15,10 +13,8 @@ const create_store = () => {
                 return;
             }
 
-            let user = await user_service.get_by_name(username);
-            if (!user) {
-                user = await user_service.create(username);
-            }
+            const user = await get_or_create_user(username);
+
             localStorage.setItem('user', username);
             set(user);
         },
