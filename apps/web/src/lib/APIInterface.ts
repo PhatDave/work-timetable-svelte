@@ -6,12 +6,10 @@ import type {APIResponse, APIResponseItem} from "$lib/APIResponse";
 import {work_date} from "$stores/WorkDate";
 import type {Worktime} from "$lib/Entity/Worktime";
 import {days} from "$stores/Days";
+import type {Overtime} from "$lib/Entity/Overtime";
 
 const API_URL = "https://pocketbase-work-timetable.site.quack-lab.dev/api";
 const API_COLLECTIONS_URL = `${API_URL}/collections`;
-
-// const DEFAULT_PAGE_SIZE: string = '?perPage=100';
-// const DEFAULT_FILTER: string = "&filter=(day>='{1}')&&(day<='{2}')&&(user.id='{3}')";
 
 export async function get_or_create_user(username: string) {
     const post_options = {
@@ -55,10 +53,9 @@ export async function get_api_days() {
     let base_url = `${API_COLLECTIONS_URL}/{0}/records`;
     base_url += "?perPage=100";
     base_url += "&sort=-day";
-    base_url += "&filter=(day>='{1}')&&(day<='{2}')&&(user.id='{3}')"
-        .replace("{1}", first_day.toISOString())
-        .replace("{2}", last_day.toISOString())
-        .replace("{3}", user_val.id);
+    // TODO: Fix this abomination as well
+    // Though it does work
+    base_url += `&filter=(${encodeURIComponent(`day>='${first_day.toISOString()}'&&day<='${last_day.toISOString()}'&&user_name='${user_val.name}'`)})`;
 
     const worktime_url: string = base_url.replace("{0}", "work_time_user");
     const overtime_url: string = base_url.replace("{0}", "overtime_user");
@@ -70,33 +67,45 @@ export async function get_api_days() {
     const overtimes: APIResponse = await res.json();
 
     const worktimes_map = worktimes.items.reduce((acc, item: APIResponseItem) => {
-        acc.set(item.day.split(" ")[0], item);
+        const date = item.day.split(" ")[0];
+        if (!acc.has(date)) {
+            acc.set(date, []);
+        }
+        acc.get(date)!.push(item);
         return acc;
-    }, new Map<string, APIResponseItem>());
+    }, new Map<string, APIResponseItem[]>());
     const overtimes_map = overtimes.items.reduce((acc, item: APIResponseItem) => {
-        acc.set(item.day.split(" ")[0], item);
+        const date = item.day.split(" ")[0];
+        if (!acc.has(date)) {
+            acc.set(date, []);
+        }
+        acc.get(date)!.push(item);
         return acc;
-    }, new Map<string, APIResponseItem>());
+    }, new Map<string, APIResponseItem[]>());
 
     for (let i = 0; i < this_month.length; i++) {
         const day: Day = this_month[i];
-        const worktime: APIResponseItem | undefined = worktimes_map.get(day.date);
-        const overtime: APIResponseItem | undefined = overtimes_map.get(day.date);
+        const worktimes: APIResponseItem[] | undefined = worktimes_map.get(day.date);
+        const overtimes: APIResponseItem[] | undefined = overtimes_map.get(day.date);
 
-        if (worktime) {
-            day.work_time.push({
-                hours: worktime.hours,
-                id: worktime.id
-            });
-            day.id = worktime.day_id;
+        if (worktimes) {
+            for (let worktime of worktimes) {
+                day.work_time.push({
+                    hours: worktime.hours,
+                    id: worktime.id
+                });
+                day.id = worktime.day_id;
+            }
         }
-        if (overtime) {
-            day.overtime.push({
-                hours: overtime.hours,
-                id: overtime.id,
-                description: overtime.description!
-            });
-            day.id = overtime.day_id;
+        if (overtimes) {
+            for (let overtime of overtimes) {
+                day.overtime.push({
+                    hours: overtime.hours,
+                    id: overtime.id,
+                    description: overtime.description!
+                });
+                day.id = overtime.day_id;
+            }
         }
     }
 
@@ -203,7 +212,7 @@ export async function create_overtime(day: Day, hours: number, description: stri
 
     const res = await fetch(`${API_COLLECTIONS_URL}/overtime/records`, post_options);
     if (res.status === 200) {
-        return await res.json() as Worktime;
+        return await res.json() as Overtime;
     }
     return undefined;
 }

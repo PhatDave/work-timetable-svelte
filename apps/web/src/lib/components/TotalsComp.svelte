@@ -3,24 +3,18 @@
     import {now} from "$stores/Now";
     import {is_same_month} from "$lib/utils";
     import {onDestroy} from "svelte";
-    import type {Day} from "$lib/Entity/Day";
+    import {work_date} from "$stores/WorkDate";
+    import {get} from "svelte/store";
 
     let work_hours = 0;
     let overtime_hours = 0;
-
-    let test: {
-        set: (this: void, value: Day[]) => void;
-        subscribe: (this: void, run: Subscriber<Day[]>, invalidate?: Invalidator<Day[]>) => Unsubscriber;
-        update: (this: void, updater: Updater<Day[]>) => void;
-        set_day: (day: Day) => void
-    } = $days;
 
     function recalculate() {
         work_hours = 0;
         overtime_hours = 0;
 
         for (const day of $days) {
-            if (is_same_month(day.datetime, $now) === false) {
+            if (is_same_month(day.datetime, get(work_date)) === false) {
                 continue;
             }
 

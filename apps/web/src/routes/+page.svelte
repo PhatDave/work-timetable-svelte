@@ -5,10 +5,10 @@
     import {fade} from 'svelte/transition';
     import {user} from '$stores/User';
     import {days} from "$stores/Days";
-    import {get_api_days} from "$lib/APIInterface";
     import {work_date} from "$stores/WorkDate";
     import {onDestroy} from "svelte";
     import DayComp from "$components/DayComp.svelte";
+    import {get_api_days} from "$lib/APIInterface";
 
     let user_init_promise = user.initialize();
 
