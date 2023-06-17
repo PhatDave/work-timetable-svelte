@@ -19,8 +19,7 @@
         {/if}
     </div>
 
-    <div
-            class="[&>*:hover]:text-primary flex items-center space-x-4 [&>*]:transition-all [&>*]:duration-300">
+    <div class="[&>*:hover]:text-primary flex items-center space-x-4 [&>*]:transition-all [&>*]:duration-300">
         <ThemeToggle/>
         <button class="p-4" on:click={() => exit(0)}>
             <Fa icon={faXmark} size="1.5x"/>
