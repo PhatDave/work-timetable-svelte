@@ -8,7 +8,7 @@ import type {Worktime} from "$lib/Entity/Worktime";
 import {days} from "$stores/Days";
 import type {Overtime} from "$lib/Entity/Overtime";
 
-const API_URL = "https://pocketbase-work-timetable.site.quack-lab.dev/api";
+const API_URL = "https://pocketbase-work-timetable.site.cyka.info/api";
 const API_COLLECTIONS_URL = `${API_URL}/collections`;
 
 export async function get_or_create_user(username: string) {

@@ -51,15 +51,7 @@
       "csp": null
     },
     "updater": {
-      "active": true,
-      "windows": {
-        "installMode": "passive"
-      },
-      "endpoints": [
-        "https://github.com/PhatDave/work-timetable-svelte/releases/latest/download/latest.json"
-      ],
-      "dialog": true,
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDI4MjQ0Q0I0Qjg5MEFGClJXU3ZrTGkwVENRb0FLdUJsdVVleXpHZ0tpa25FdE5BV2NvdjZFQWMzRVk5MklkQlk0V3JmRmV5Cg=="
+      "active": false
     },
     "windows": [
       {
