@@ -15,9 +15,8 @@ export default class UserService {
 	}
 
 	public async get_by_name(name: string): Promise<User | undefined> {
-		const res: APIResponseDTO = await this.user_repository.get_by_name(
-			name
-		);
+		const res: APIResponseDTO =
+			await this.user_repository.get_by_name(name);
 		if (res.totalItems > 0) {
 			return this.mapper.to_entity_7(res.items[0] as UserDTO);
 		}

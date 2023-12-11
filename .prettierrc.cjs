@@ -1,7 +1,7 @@
 module.exports = {
   singleQuote: true,
   trailingComma: 'none',
-  printWidth: 80,
+  printWidth: 120,
   svelteStrictMode: false,
   svelteAllowShorthand: true,
   bracketSameLine: true,
